@@ -3,10 +3,10 @@ package rest
 import (
 	"net/http"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
 	"github.com/hadihammurabi/dummy-online-shop/app/service"
 	"github.com/ngamux/ctx"
-	"github.com/ngamux/ngamux"
 )
 
 type HelloRest struct {
@@ -33,7 +33,5 @@ func (r *HelloRest) getService() *service.Service {
 
 func (r *HelloRest) Index(c *ctx.Context) error {
 	message := r.getService().Hello.GetMessage()
-	return c.JSON(http.StatusOK, ngamux.Map{
-		"message": message,
-	})
+	return response.Success(c, http.StatusOK, message)
 }
