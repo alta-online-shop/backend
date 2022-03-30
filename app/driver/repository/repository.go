@@ -15,6 +15,12 @@ type Repository struct {
 	Product product.ProductRepo
 }
 
+func builldRepo(db *gorm.DB) *Repository {
+	return &Repository{
+		Product: product.NewSQL(db),
+	}
+}
+
 func New() error {
 	cfg := ioc.Use(config.Config{}).(*config.Config)
 
@@ -22,9 +28,8 @@ func New() error {
 	if err != nil {
 		return err
 	}
-	repo := &Repository{
-		Product: product.NewSQL(db),
-	}
+	repo := builldRepo(db)
+
 	ioc.Bind(Repository{}, func() interface{} {
 		return repo
 	})

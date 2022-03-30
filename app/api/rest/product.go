@@ -2,12 +2,15 @@ package rest
 
 import (
 	"context"
+	"errors"
 	"net/http"
+	"strconv"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
+	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository"
 	"github.com/hadihammurabi/dummy-online-shop/app/service"
 	"github.com/ngamux/ctx"
-	"github.com/ngamux/ngamux"
 )
 
 type ProductRest struct {
@@ -23,6 +26,7 @@ func NewProductRest(mux *ctx.CtxMux) *ProductRest {
 
 func (r *ProductRest) route() {
 	r.mux.Get("/", r.Index)
+	r.mux.Get("/:id", r.Show)
 }
 
 func (r *ProductRest) getService() *service.Service {
@@ -35,11 +39,27 @@ func (r *ProductRest) getService() *service.Service {
 func (r *ProductRest) Index(c *ctx.Context) error {
 	products, err := r.getService().Product.All(context.Background())
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, ngamux.Map{
-			"error": err.Error(),
-		})
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, ngamux.Map{
-		"products": products,
-	})
+
+	return response.Success(c, http.StatusOK, products)
+}
+
+func (r *ProductRest) Show(c *ctx.Context) error {
+	idFromUrl := c.GetParam("id")
+	id, err := strconv.Atoi(idFromUrl)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	product, err := r.getService().Product.FindByID(context.Background(), uint(id))
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return response.Fail(c, http.StatusNotFound, err.Error())
+		}
+
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, product)
 }
