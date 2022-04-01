@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/category"
 	"github.com/hadihammurabi/dummy-online-shop/app/entity"
 	"gorm.io/gorm"
 )
@@ -12,6 +13,8 @@ type Product struct {
 	Name        string
 	Description string
 	Price       uint
+
+	Categories []*category.Category `gorm:"many2many:product_categories;"`
 }
 
 type ProductRepo interface {
@@ -23,16 +26,23 @@ type ProductRepo interface {
 }
 
 func (t *Product) ToEntity() *entity.Product {
-	return &entity.Product{
+	product := &entity.Product{
 		ID:          t.ID,
 		Name:        t.Name,
 		Description: t.Description,
 		Price:       t.Price,
 	}
+
+	product.Categories = make([]*entity.Category, 0)
+	for _, cat := range t.Categories {
+		product.Categories = append(product.Categories, cat.ToEntity())
+	}
+
+	return product
 }
 
 func ProductFromEntity(t *entity.Product) *Product {
-	return &Product{
+	product := &Product{
 		Model: &gorm.Model{
 			ID: t.ID,
 		},
@@ -40,4 +50,11 @@ func ProductFromEntity(t *entity.Product) *Product {
 		Description: t.Description,
 		Price:       t.Price,
 	}
+
+	product.Categories = make([]*category.Category, 0)
+	for _, cat := range t.Categories {
+		product.Categories = append(product.Categories, category.CategoryFromEntity(cat))
+	}
+
+	return product
 }

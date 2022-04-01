@@ -17,6 +17,7 @@ func New() *Rest {
 
 	NewHelloRest(ctx.Mux(mux.Group("/hello")))
 	NewProductRest(ctx.Mux(mux.Group("/products")))
+	NewCategoryRest(ctx.Mux(mux.Group("/categories")))
 
 	return rest
 }

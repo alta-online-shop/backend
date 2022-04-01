@@ -5,6 +5,7 @@ import (
 
 	"github.com/hadihammurabi/dummy-online-shop/app/config"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
+	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/category"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/product"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -12,12 +13,14 @@ import (
 )
 
 type Repository struct {
-	Product product.ProductRepo
+	Product  product.ProductRepo
+	Category category.CategoryRepo
 }
 
 func builldRepo(db *gorm.DB) *Repository {
 	return &Repository{
-		Product: product.NewSQL(db),
+		Product:  product.NewSQL(db),
+		Category: category.NewSQL(db),
 	}
 }
 
