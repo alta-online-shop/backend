@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/request"
 	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository"
@@ -26,6 +27,7 @@ func NewProductRest(mux *ctx.CtxMux) *ProductRest {
 
 func (r *ProductRest) route() {
 	r.mux.Get("/", r.Index)
+	r.mux.Post("/", r.Store)
 	r.mux.Get("/:id", r.Show)
 }
 
@@ -58,6 +60,30 @@ func (r *ProductRest) Show(c *ctx.Context) error {
 			return response.Fail(c, http.StatusNotFound, err.Error())
 		}
 
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, product)
+}
+
+func (r *ProductRest) Store(c *ctx.Context) error {
+	var productIn *request.ProductCreate
+	if err := c.GetJSON(&productIn); err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	productToCreate := productIn.ToEntity()
+	for _, c := range productIn.Categories {
+		cat, err := r.getService().Category.FindByID(context.Background(), c)
+		if err != nil {
+			continue
+		}
+
+		productToCreate.Categories = append(productToCreate.Categories, cat)
+	}
+
+	product, err := r.getService().Product.Create(context.Background(), productToCreate)
+	if err != nil {
 		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
 

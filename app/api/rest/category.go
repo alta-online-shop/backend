@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/request"
 	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository"
@@ -26,6 +27,7 @@ func NewCategoryRest(mux *ctx.CtxMux) *CategoryRest {
 
 func (r *CategoryRest) route() {
 	r.mux.Get("/", r.Index)
+	r.mux.Post("/", r.Store)
 	r.mux.Get("/:id", r.Show)
 }
 
@@ -37,12 +39,12 @@ func (r *CategoryRest) getService() *service.Service {
 }
 
 func (r *CategoryRest) Index(c *ctx.Context) error {
-	products, err := r.getService().Category.All(context.Background())
+	categories, err := r.getService().Category.All(context.Background())
 	if err != nil {
 		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return response.Success(c, http.StatusOK, products)
+	return response.Success(c, http.StatusOK, categories)
 }
 
 func (r *CategoryRest) Show(c *ctx.Context) error {
@@ -52,7 +54,7 @@ func (r *CategoryRest) Show(c *ctx.Context) error {
 		return response.Fail(c, http.StatusBadRequest, err.Error())
 	}
 
-	product, err := r.getService().Category.FindByID(context.Background(), uint(id))
+	category, err := r.getService().Category.FindByID(context.Background(), uint(id))
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return response.Fail(c, http.StatusNotFound, err.Error())
@@ -61,5 +63,19 @@ func (r *CategoryRest) Show(c *ctx.Context) error {
 		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return response.Success(c, http.StatusOK, product)
+	return response.Success(c, http.StatusOK, category)
+}
+
+func (r *CategoryRest) Store(c *ctx.Context) error {
+	var categoryIn *request.CategoryCreate
+	if err := c.GetJSON(&categoryIn); err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	category, err := r.getService().Category.Create(context.Background(), categoryIn.ToEntity())
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, category)
 }

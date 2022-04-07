@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS categories (
   id SERIAL PRIMARY KEY,
 
-  name VARCHAR,
+  name VARCHAR NOT NULL CHECK (name != ''),
   description TEXT,
 
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),

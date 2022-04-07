@@ -26,11 +26,12 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.categories (
     id integer NOT NULL,
-    name character varying,
+    name character varying NOT NULL,
     description text,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    CONSTRAINT categories_name_check CHECK (((name)::text <> ''::text))
 );
 
 
@@ -99,12 +100,13 @@ ALTER SEQUENCE public.product_categories_id_seq OWNED BY public.product_categori
 
 CREATE TABLE public.products (
     id integer NOT NULL,
-    name character varying,
+    name character varying NOT NULL,
     description text,
-    price bigint,
+    price bigint NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone,
     deleted_at timestamp without time zone,
+    CONSTRAINT products_name_check CHECK (((name)::text <> ''::text)),
     CONSTRAINT products_price_check CHECK ((price >= 0))
 );
 

@@ -3,6 +3,7 @@ package category
 import (
 	"context"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/table"
 	"github.com/hadihammurabi/dummy-online-shop/app/entity"
 	"gorm.io/gorm"
 )
@@ -18,7 +19,7 @@ func NewSQL(db *gorm.DB) CategoryRepo {
 }
 
 func (r *sql) All(c context.Context) ([]entity.Category, error) {
-	var categoriesFromTable []Category
+	var categoriesFromTable []table.Category
 	err := r.db.WithContext(c).Find(&categoriesFromTable).Error
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func (r *sql) All(c context.Context) ([]entity.Category, error) {
 }
 
 func (r *sql) FindByID(c context.Context, id uint) (*entity.Category, error) {
-	var categoryFromTable *Category
+	var categoryFromTable *table.Category
 	err := r.db.WithContext(c).Where("id = ?", id).First(&categoryFromTable).Error
 	if err != nil {
 		return nil, err
@@ -43,8 +44,8 @@ func (r *sql) FindByID(c context.Context, id uint) (*entity.Category, error) {
 }
 
 func (r *sql) Create(c context.Context, p *entity.Category) (*entity.Category, error) {
-	categoryToTable := CategoryFromEntity(p)
-	err := r.db.WithContext(c).Save(&categoryToTable).Error
+	categoryToTable := table.CategoryFromEntity(p)
+	err := r.db.WithContext(c).Create(&categoryToTable).Error
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +54,7 @@ func (r *sql) Create(c context.Context, p *entity.Category) (*entity.Category, e
 }
 
 func (r *sql) Update(c context.Context, p *entity.Category) (*entity.Category, error) {
-	categoryToTable := CategoryFromEntity(p)
+	categoryToTable := table.CategoryFromEntity(p)
 	err := r.db.WithContext(c).Updates(&categoryToTable).Error
 	if err != nil {
 		return nil, err
@@ -63,7 +64,7 @@ func (r *sql) Update(c context.Context, p *entity.Category) (*entity.Category, e
 }
 
 func (r *sql) Delete(c context.Context, id uint) error {
-	err := r.db.WithContext(c).Delete(&Category{Model: &gorm.Model{ID: id}}).Error
+	err := r.db.WithContext(c).Delete(&table.Category{Model: &gorm.Model{ID: id}}).Error
 	if err != nil {
 		return err
 	}

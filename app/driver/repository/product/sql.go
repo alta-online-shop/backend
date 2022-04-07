@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/table"
 	"github.com/hadihammurabi/dummy-online-shop/app/entity"
 	"gorm.io/gorm"
 )
@@ -18,8 +19,8 @@ func NewSQL(db *gorm.DB) ProductRepo {
 }
 
 func (r *sql) All(c context.Context) ([]entity.Product, error) {
-	var productsFromTable []Product
-	err := r.db.WithContext(c).Joins("Categories").Find(&productsFromTable).Error
+	var productsFromTable []table.Product
+	err := r.db.Debug().WithContext(c).Preload("Categories").Find(&productsFromTable).Error
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +34,7 @@ func (r *sql) All(c context.Context) ([]entity.Product, error) {
 }
 
 func (r *sql) FindByID(c context.Context, id uint) (*entity.Product, error) {
-	var productFromTable *Product
+	var productFromTable *table.Product
 	err := r.db.WithContext(c).Where("id = ?", id).Joins("Categories").First(&productFromTable).Error
 	if err != nil {
 		return nil, err
@@ -43,8 +44,8 @@ func (r *sql) FindByID(c context.Context, id uint) (*entity.Product, error) {
 }
 
 func (r *sql) Create(c context.Context, p *entity.Product) (*entity.Product, error) {
-	productToTable := ProductFromEntity(p)
-	err := r.db.WithContext(c).Save(&productToTable).Error
+	productToTable := table.ProductFromEntity(p)
+	err := r.db.Debug().WithContext(c).Create(&productToTable).Error
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +54,7 @@ func (r *sql) Create(c context.Context, p *entity.Product) (*entity.Product, err
 }
 
 func (r *sql) Update(c context.Context, p *entity.Product) (*entity.Product, error) {
-	productToTable := ProductFromEntity(p)
+	productToTable := table.ProductFromEntity(p)
 	err := r.db.WithContext(c).Updates(&productToTable).Error
 	if err != nil {
 		return nil, err
@@ -63,7 +64,7 @@ func (r *sql) Update(c context.Context, p *entity.Product) (*entity.Product, err
 }
 
 func (r *sql) Delete(c context.Context, id uint) error {
-	err := r.db.WithContext(c).Delete(&Product{Model: &gorm.Model{ID: id}}).Error
+	err := r.db.WithContext(c).Delete(&table.Product{Model: &gorm.Model{ID: id}}).Error
 	if err != nil {
 		return err
 	}
