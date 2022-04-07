@@ -16,6 +16,7 @@ github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LB
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/gofrs/uuid v4.0.0+incompatible h1:1SD/1F5pU8p29ybwgQSwpQk+mwdRrXCYuPhW6m+TnJw=
 github.com/gofrs/uuid v4.0.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
+github.com/golang-jwt/jwt/v4 v4.1.0/go.mod h1:/xlHOz8bRuivTWchD4jCa+NbatV+wEUSzwAxVc6locg=
 github.com/golang-must/must v0.0.0-20211018162553-f536e16d6da8/go.mod h1:Ea+Pj9+4Y581x8+7f65xWh2VcXjA1UnvPsoxAaA1iz0=
 github.com/golang-must/must v0.0.0-20211028065754-d81547c0927f h1:6a46vQZC3g7tsr48uJ+OObc1fJZ1Xj5DPfkJRNU0HxE=
 github.com/golang-must/must v0.0.0-20211028065754-d81547c0927f/go.mod h1:Ea+Pj9+4Y581x8+7f65xWh2VcXjA1UnvPsoxAaA1iz0=
@@ -94,6 +95,9 @@ github.com/mattn/go-isatty v0.0.7/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hd
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/ngamux/ctx v0.0.0-20220323101051-da310bd5b81c h1:F8FjBvupwQ1f+UF2i59NQaqhgeFgN3SiXCEdA4VAnxk=
 github.com/ngamux/ctx v0.0.0-20220323101051-da310bd5b81c/go.mod h1:X1uyCOZK959sYPXlxMmX/VwLdhuW6QiGddiKq4rj48w=
+github.com/ngamux/middleware v0.0.0-20220315145733-6438b71e08c8 h1:ktNc7lZfJsyAyxwdEKjjyTQ7YOVacG0Jobk1VnRg5SI=
+github.com/ngamux/middleware v0.0.0-20220315145733-6438b71e08c8/go.mod h1:Bdh5qXN/tgB+e8pfJuGL5J/dmL5QlusWfSvneL+gqjg=
+github.com/ngamux/ngamux v1.0.3/go.mod h1:V6GvzXjgxd/sJn7vkhS+QRbHkvBbmyxd9caDFdtKXQo=
 github.com/ngamux/ngamux v1.0.4 h1:9dK4LUfyI3J0w6gMT8SdZRH5RAAMS/v9RN4bf4aH0Z0=
 github.com/ngamux/ngamux v1.0.4/go.mod h1:+E6sQoxYI3AtTwPUaAe0wBVosJsyvkCzs7pczelu6fs=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=

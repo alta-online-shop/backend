@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/request"
-	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/request"
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository"
 	"github.com/hadihammurabi/dummy-online-shop/app/service"
@@ -29,6 +29,7 @@ func (r *ProductRest) route() {
 	r.mux.Get("/", r.Index)
 	r.mux.Post("/", r.Store)
 	r.mux.Get("/:id", r.Show)
+	r.mux.Delete("/:id", r.Destroy)
 }
 
 func (r *ProductRest) getService() *service.Service {
@@ -88,4 +89,19 @@ func (r *ProductRest) Store(c *ctx.Context) error {
 	}
 
 	return response.Success(c, http.StatusOK, product)
+}
+
+func (r *ProductRest) Destroy(c *ctx.Context) error {
+	idFromParam := c.GetParam("id")
+	id, err := strconv.Atoi(idFromParam)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	err = r.getService().Product.Delete(context.Background(), uint(id))
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, nil)
 }

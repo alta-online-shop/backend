@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/request"
-	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/request"
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository"
 	"github.com/hadihammurabi/dummy-online-shop/app/service"

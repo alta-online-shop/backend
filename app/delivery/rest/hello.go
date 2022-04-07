@@ -3,7 +3,7 @@ package rest
 import (
 	"net/http"
 
-	"github.com/hadihammurabi/dummy-online-shop/app/api/rest/response"
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
 	"github.com/hadihammurabi/dummy-online-shop/app/service"
 	"github.com/ngamux/ctx"
