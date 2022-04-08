@@ -17,6 +17,7 @@ type Web struct {
 
 func (w *Web) buildRoute() {
 	NewProductWeb(w.mux)
+	NewCategoryWeb(w.mux)
 }
 
 func New() *Web {
