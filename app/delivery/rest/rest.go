@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ngamux/ctx"
+	"github.com/ngamux/middleware/cors"
 	"github.com/ngamux/ngamux"
 )
 
@@ -21,6 +22,9 @@ func (r *Rest) buildRoute() {
 
 func New() *Rest {
 	mux := ngamux.New()
+	mux.Use(cors.New(cors.Config{
+		AllowHeaders: "content-type",
+	}))
 	rest := &Rest{mux}
 
 	rest.buildRoute()
@@ -30,7 +34,7 @@ func New() *Rest {
 
 func (r *Rest) Start() error {
 	addr := "0.0.0.0:8081"
-	fmt.Printf("App run at %s", addr)
+	fmt.Printf("App run at %s\n", addr)
 
 	return http.ListenAndServe(addr, r.mux)
 }
