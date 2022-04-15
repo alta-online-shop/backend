@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/hadihammurabi/dummy-online-shop/app/config"
-	"github.com/hadihammurabi/dummy-online-shop/app/delivery/web"
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository"
 	"github.com/hadihammurabi/dummy-online-shop/app/service"
 )
@@ -16,6 +16,6 @@ func main() {
 	}
 	service.New()
 
-	deliveryWeb := web.New()
-	log.Fatalln(deliveryWeb.Start())
+	deliveryRest := rest.New()
+	log.Fatalln(deliveryRest.Start())
 }

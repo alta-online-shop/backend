@@ -1,6 +1,9 @@
 package rest
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/ngamux/ctx"
 	"github.com/ngamux/ngamux"
 )
@@ -24,14 +27,9 @@ func New() *Rest {
 	return rest
 }
 
-func NewWith(mux *ngamux.Ngamux) *Rest {
-	rest := &Rest{mux}
-
-	rest.buildRoute()
-
-	return rest
-}
-
 func (r *Rest) Start() error {
-	return nil
+	addr := "0.0.0.0:8081"
+	fmt.Printf("App run at %s", addr)
+
+	return http.ListenAndServe(addr, r.mux)
 }
