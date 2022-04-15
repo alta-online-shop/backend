@@ -52,3 +52,10 @@ func (r AuthLoginRequest) Validate() error {
 
 	return nil
 }
+
+func (r AuthLoginRequest) ToEntity() *entity.User {
+	return &entity.User{
+		Email:    r.Email,
+		Password: r.Password,
+	}
+}

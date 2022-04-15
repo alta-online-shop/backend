@@ -7,6 +7,7 @@ type Service struct {
 	Product  ProductService
 	Category CategoryService
 	User     UserService
+	Auth     AuthService
 }
 
 func New() {
@@ -15,6 +16,7 @@ func New() {
 		Product:  NewProductService(),
 		Category: NewCategoryService(),
 		User:     NewUserService(),
+		Auth:     NewAuthService(),
 	}
 
 	ioc.Bind(Service{}, func() interface{} {

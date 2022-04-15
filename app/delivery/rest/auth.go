@@ -53,5 +53,19 @@ func (r *AuthRest) Register(c *ctx.Context) error {
 }
 
 func (r *AuthRest) Login(c *ctx.Context) error {
-	return nil
+	var reqBody request.AuthLoginRequest
+	if err := c.GetJSON(&reqBody); err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	if err := reqBody.Validate(); err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	token, err := r.getService().Auth.Login(context.Background(), reqBody.Email, reqBody.Password)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, token)
 }
