@@ -14,6 +14,7 @@ type Rest struct {
 
 func (r *Rest) buildRoute() {
 	NewHelloRest(ctx.Mux(r.mux.Group("/api/hello")))
+	NewAuthRest(ctx.Mux(r.mux.Group("/api/auth")))
 	NewProductRest(ctx.Mux(r.mux.Group("/api/products")))
 	NewCategoryRest(ctx.Mux(r.mux.Group("/api/categories")))
 }

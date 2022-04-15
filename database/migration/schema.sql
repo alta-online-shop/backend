@@ -60,6 +60,44 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
+-- Name: orders; Type: TABLE; Schema: public; Owner: hammurabi
+--
+
+CREATE TABLE public.orders (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    quantity integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE public.orders OWNER TO hammurabi;
+
+--
+-- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: hammurabi
+--
+
+CREATE SEQUENCE public.orders_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_id_seq OWNER TO hammurabi;
+
+--
+-- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hammurabi
+--
+
+ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
+
+
+--
 -- Name: product_categories; Type: TABLE; Schema: public; Owner: hammurabi
 --
 
@@ -147,10 +185,59 @@ CREATE TABLE public.schema_migration (
 ALTER TABLE public.schema_migration OWNER TO hammurabi;
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: hammurabi
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    email character varying NOT NULL,
+    password text NOT NULL,
+    fullname character varying NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone,
+    deleted_at timestamp without time zone,
+    CONSTRAINT users_email_check CHECK (((email)::text <> ''::text)),
+    CONSTRAINT users_fullname_check CHECK (((fullname)::text <> ''::text)),
+    CONSTRAINT users_password_check CHECK ((password <> ''::text))
+);
+
+
+ALTER TABLE public.users OWNER TO hammurabi;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: hammurabi
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO hammurabi;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hammurabi
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
 -- Name: categories id; Type: DEFAULT; Schema: public; Owner: hammurabi
 --
 
 ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
+
+
+--
+-- Name: orders id; Type: DEFAULT; Schema: public; Owner: hammurabi
+--
+
+ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
 
 
 --
@@ -168,11 +255,26 @@ ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: hammurabi
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
 -- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: hammurabi
 --
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: hammurabi
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
 
 
 --
@@ -189,6 +291,22 @@ ALTER TABLE ONLY public.product_categories
 
 ALTER TABLE ONLY public.products
     ADD CONSTRAINT products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: hammurabi
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: hammurabi
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
 --
