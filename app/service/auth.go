@@ -13,6 +13,7 @@ import (
 
 type AuthService interface {
 	Login(c context.Context, email string, password string) (string, error)
+	Info(c context.Context, token string) (*entity.User, error)
 }
 
 type authService struct {
@@ -52,4 +53,25 @@ func (s *authService) Login(c context.Context, email string, password string) (s
 	}
 
 	return tokenString, nil
+}
+
+func (s *authService) Info(c context.Context, tokenString string) (*entity.User, error) {
+	claims := entity.JWTClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, &claims, func(t *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("APP_KEY")), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	user, err := s.getRepo().User.FindByEmail(c, claims.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

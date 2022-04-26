@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/middleware"
 	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/request"
 	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
@@ -12,12 +13,13 @@ import (
 )
 
 type AuthRest struct {
-	mux     *ctx.CtxMux
-	service *service.Service
+	mux            *ctx.CtxMux
+	service        *service.Service
+	authMiddleware *middleware.AuthMiddleware
 }
 
 func NewAuthRest(mux *ctx.CtxMux) *AuthRest {
-	r := &AuthRest{mux: mux}
+	r := &AuthRest{mux: mux, authMiddleware: &middleware.AuthMiddleware{}}
 	r.route()
 	return r
 }
@@ -25,6 +27,7 @@ func NewAuthRest(mux *ctx.CtxMux) *AuthRest {
 func (r *AuthRest) route() {
 	r.mux.Post("/register", r.Register)
 	r.mux.Post("/login", r.Login)
+	r.mux.Get("/info", r.Info)
 }
 
 func (r *AuthRest) getService() *service.Service {
@@ -68,4 +71,13 @@ func (r *AuthRest) Login(c *ctx.Context) error {
 	}
 
 	return response.Success(c, http.StatusOK, token)
+}
+
+func (r *AuthRest) Info(c *ctx.Context) error {
+	authMiddleware := middleware.NewAuthMiddleware(r.getService())
+	user, err := authMiddleware.JWT(c)
+	if err != nil {
+		return response.Fail(c, http.StatusUnauthorized, err.Error())
+	}
+	return response.Success(c, http.StatusOK, user)
 }

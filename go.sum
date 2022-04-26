@@ -95,8 +95,8 @@ github.com/mattn/go-colorable v0.1.6/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope
 github.com/mattn/go-isatty v0.0.5/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/mattn/go-isatty v0.0.7/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
-github.com/ngamux/ctx v0.0.0-20220323101051-da310bd5b81c h1:F8FjBvupwQ1f+UF2i59NQaqhgeFgN3SiXCEdA4VAnxk=
-github.com/ngamux/ctx v0.0.0-20220323101051-da310bd5b81c/go.mod h1:X1uyCOZK959sYPXlxMmX/VwLdhuW6QiGddiKq4rj48w=
+github.com/ngamux/ctx v0.0.0-20220425045553-ec4907d5c0a6 h1:PkoxEjMDhLgeN1/+kBwSCC96WtsMjJ/7nV2t0l+ph3A=
+github.com/ngamux/ctx v0.0.0-20220425045553-ec4907d5c0a6/go.mod h1:X1uyCOZK959sYPXlxMmX/VwLdhuW6QiGddiKq4rj48w=
 github.com/ngamux/middleware v0.0.0-20220315145733-6438b71e08c8 h1:ktNc7lZfJsyAyxwdEKjjyTQ7YOVacG0Jobk1VnRg5SI=
 github.com/ngamux/middleware v0.0.0-20220315145733-6438b71e08c8/go.mod h1:Bdh5qXN/tgB+e8pfJuGL5J/dmL5QlusWfSvneL+gqjg=
 github.com/ngamux/ngamux v1.0.3/go.mod h1:V6GvzXjgxd/sJn7vkhS+QRbHkvBbmyxd9caDFdtKXQo=

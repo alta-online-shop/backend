@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/gowok/ioc v0.0.0-20220326155235-34bfe7e1dad0
-	github.com/ngamux/ctx v0.0.0-20220323101051-da310bd5b81c
+	github.com/ngamux/ctx v0.0.0-20220425045553-ec4907d5c0a6
 	github.com/ngamux/middleware v0.0.0-20220315145733-6438b71e08c8
 	github.com/ngamux/ngamux v1.0.4
 	gorm.io/driver/mysql v1.3.2
