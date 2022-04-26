@@ -18,6 +18,7 @@ func (r *Rest) buildRoute() {
 	NewAuthRest(ctx.Mux(r.mux.Group("/api/auth")))
 	NewProductRest(ctx.Mux(r.mux.Group("/api/products")))
 	NewCategoryRest(ctx.Mux(r.mux.Group("/api/categories")))
+	NewOrderRest(ctx.Mux(r.mux.Group("/api/orders")))
 }
 
 func New() *Rest {

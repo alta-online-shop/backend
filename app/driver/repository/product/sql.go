@@ -35,7 +35,7 @@ func (r *sql) All(c context.Context) ([]entity.Product, error) {
 
 func (r *sql) FindByID(c context.Context, id uint) (*entity.Product, error) {
 	var productFromTable *table.Product
-	err := r.db.WithContext(c).Where("id = ?", id).Joins("Categories").First(&productFromTable).Error
+	err := r.db.WithContext(c).Where("id = ?", id).Preload("Categories").First(&productFromTable).Error
 	if err != nil {
 		return nil, err
 	}

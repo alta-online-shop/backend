@@ -8,6 +8,7 @@ type Service struct {
 	Category CategoryService
 	User     UserService
 	Auth     AuthService
+	Order    OrderService
 }
 
 func New() {
@@ -17,6 +18,7 @@ func New() {
 		Category: NewCategoryService(),
 		User:     NewUserService(),
 		Auth:     NewAuthService(),
+		Order:    NewOrderService(),
 	}
 
 	ioc.Bind(Service{}, func() interface{} {
