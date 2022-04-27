@@ -33,6 +33,25 @@ func (r *sql) All(c context.Context) ([]entity.Product, error) {
 	return products, nil
 }
 
+func (r *sql) FindByCategoryID(c context.Context, id uint) ([]entity.Product, error) {
+	var productsFromTable []table.Product
+	err := r.db.Debug().WithContext(c).
+		Preload("Categories").
+		Joins("JOIN product_categories B ON B.product_id=products.id").
+		Where("B.id = ? ", id).
+		Find(&productsFromTable).Error
+	if err != nil {
+		return nil, err
+	}
+
+	products := make([]entity.Product, 0)
+	for _, p := range productsFromTable {
+		products = append(products, *p.ToEntity())
+	}
+
+	return products, nil
+}
+
 func (r *sql) FindByID(c context.Context, id uint) (*entity.Product, error) {
 	var productFromTable *table.Product
 	err := r.db.WithContext(c).Where("id = ?", id).Preload("Categories").First(&productFromTable).Error

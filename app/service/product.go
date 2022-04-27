@@ -10,6 +10,7 @@ import (
 
 type ProductService interface {
 	All(c context.Context) ([]entity.Product, error)
+	FindByCategoryID(c context.Context, id uint) ([]entity.Product, error)
 	FindByID(c context.Context, id uint) (*entity.Product, error)
 	Create(c context.Context, p *entity.Product) (*entity.Product, error)
 	Update(c context.Context, p *entity.Product) (*entity.Product, error)
@@ -34,6 +35,11 @@ func (s *productService) getRepo() *repository.Repository {
 
 func (s *productService) All(c context.Context) (products []entity.Product, err error) {
 	products, err = s.getRepo().Product.All(c)
+	return
+}
+
+func (s *productService) FindByCategoryID(c context.Context, id uint) (products []entity.Product, err error) {
+	products, err = s.getRepo().Product.FindByCategoryID(c, id)
 	return
 }
 

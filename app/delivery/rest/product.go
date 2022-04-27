@@ -40,7 +40,26 @@ func (r *ProductRest) getService() *service.Service {
 }
 
 func (r *ProductRest) Index(c *ctx.Context) error {
-	products, err := r.getService().Product.All(context.Background())
+	categoryFromQuery := c.GetQuery("category")
+	if categoryFromQuery == "" {
+		categoryFromQuery = c.GetQuery("c")
+	}
+
+	categoryID, err := strconv.Atoi(categoryFromQuery)
+	if err != nil {
+		categoryID = 0
+	}
+
+	if categoryID == 0 {
+		products, err := r.getService().Product.All(context.Background())
+		if err != nil {
+			return response.Fail(c, http.StatusInternalServerError, err.Error())
+		}
+
+		return response.Success(c, http.StatusOK, products)
+	}
+
+	products, err := r.getService().Product.FindByCategoryID(context.Background(), uint(categoryID))
 	if err != nil {
 		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
