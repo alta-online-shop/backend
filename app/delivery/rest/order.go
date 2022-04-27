@@ -42,17 +42,34 @@ func (r *OrderRest) getService() *service.Service {
 
 func (r *OrderRest) Index(c *ctx.Context) error {
 	authMiddleware := middleware.NewAuthMiddleware(r.service)
-	_, err := authMiddleware.JWT(c)
+	user, err := authMiddleware.JWT(c)
 	if err != nil {
 		return response.Fail(c, http.StatusUnauthorized, err.Error())
 	}
 
-	orders, err := r.getService().Order.All(context.Background())
+	orders, err := r.getService().Order.FindByUserID(context.Background(), user.ID)
 	if err != nil {
 		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return response.Success(c, http.StatusOK, orders)
+	type rr struct {
+		Product  string
+		Price    uint
+		Quantity uint
+		Subtotal uint
+	}
+	orderResponse := make([]rr, 0)
+
+	for _, order := range orders {
+		orderResponse = append(orderResponse, rr{
+			Product:  order.Product.Name,
+			Price:    order.Product.Price,
+			Quantity: order.Quantity,
+			Subtotal: order.Quantity * order.Product.Price,
+		})
+	}
+
+	return response.Success(c, http.StatusOK, orderResponse)
 }
 
 func (r *OrderRest) Show(c *ctx.Context) error {

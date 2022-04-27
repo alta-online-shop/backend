@@ -11,6 +11,7 @@ import (
 type OrderService interface {
 	All(c context.Context) ([]entity.Order, error)
 	FindByID(c context.Context, id uint) (*entity.Order, error)
+	FindByUserID(c context.Context, id uint) ([]entity.Order, error)
 	Create(c context.Context, p *entity.Order) (*entity.Order, error)
 	Update(c context.Context, p *entity.Order) (*entity.Order, error)
 	Delete(c context.Context, id uint) error
@@ -39,6 +40,11 @@ func (s *orderService) All(c context.Context) (orders []entity.Order, err error)
 
 func (s *orderService) FindByID(c context.Context, id uint) (order *entity.Order, err error) {
 	order, err = s.getRepo().Order.FindByID(c, id)
+	return
+}
+
+func (s *orderService) FindByUserID(c context.Context, id uint) (orders []entity.Order, err error) {
+	orders, err = s.getRepo().Order.FindByUserID(c, id)
 	return
 }
 

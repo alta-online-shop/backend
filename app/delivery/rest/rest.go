@@ -24,7 +24,7 @@ func (r *Rest) buildRoute() {
 func New() *Rest {
 	mux := ngamux.New()
 	mux.Use(cors.New(cors.Config{
-		AllowHeaders: "content-type",
+		AllowHeaders: "content-type,authorization",
 	}))
 	rest := &Rest{mux}
 

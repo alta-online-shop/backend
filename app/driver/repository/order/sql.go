@@ -53,6 +53,23 @@ func (r *sql) FindByID(c context.Context, id uint) (*entity.Order, error) {
 	return orderFromTable.ToEntity(user, product), nil
 }
 
+func (r *sql) FindByUserID(c context.Context, id uint) ([]entity.Order, error) {
+	var orderFromTable []table.Order
+	err := r.db.WithContext(c).Where("user_id = ?", id).Find(&orderFromTable).Error
+	if err != nil {
+		return nil, err
+	}
+
+	orders := make([]entity.Order, 0)
+	for _, p := range orderFromTable {
+		user, _ := r.userRepo.FindByID(c, p.UserID)
+		product, _ := r.productRepo.FindByID(c, p.ProductID)
+		orders = append(orders, *p.ToEntity(user, product))
+	}
+
+	return orders, nil
+}
+
 func (r *sql) Create(c context.Context, p *entity.Order) (*entity.Order, error) {
 	orderToTable := table.OrderFromEntity(p)
 	err := r.db.WithContext(c).Create(&orderToTable).Error
