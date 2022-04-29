@@ -9,6 +9,7 @@ type Service struct {
 	User     UserService
 	Auth     AuthService
 	Order    OrderService
+	Rating   RatingService
 }
 
 func New() {
@@ -19,6 +20,7 @@ func New() {
 		User:     NewUserService(),
 		Auth:     NewAuthService(),
 		Order:    NewOrderService(),
+		Rating:   NewRatingService(),
 	}
 
 	ioc.Bind(Service{}, func() interface{} {

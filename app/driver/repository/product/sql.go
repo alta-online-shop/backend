@@ -20,7 +20,7 @@ func NewSQL(db *gorm.DB) ProductRepo {
 
 func (r *sql) All(c context.Context) ([]entity.Product, error) {
 	var productsFromTable []table.Product
-	err := r.db.Debug().WithContext(c).Preload("Categories").Find(&productsFromTable).Error
+	err := r.db.WithContext(c).Preload("Categories").Find(&productsFromTable).Error
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func (r *sql) All(c context.Context) ([]entity.Product, error) {
 
 func (r *sql) FindByCategoryID(c context.Context, id uint) ([]entity.Product, error) {
 	var productsFromTable []table.Product
-	err := r.db.Debug().WithContext(c).
+	err := r.db.WithContext(c).
 		Preload("Categories").
 		Joins("JOIN product_categories B ON B.product_id=products.id").
 		Where("B.id = ? ", id).
@@ -64,7 +64,7 @@ func (r *sql) FindByID(c context.Context, id uint) (*entity.Product, error) {
 
 func (r *sql) Create(c context.Context, p *entity.Product) (*entity.Product, error) {
 	productToTable := table.ProductFromEntity(p)
-	err := r.db.Debug().WithContext(c).Create(&productToTable).Error
+	err := r.db.WithContext(c).Create(&productToTable).Error
 	if err != nil {
 		return nil, err
 	}

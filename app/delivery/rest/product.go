@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/middleware"
 	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/request"
 	"github.com/hadihammurabi/dummy-online-shop/app/delivery/rest/response"
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/ioc"
@@ -30,6 +31,9 @@ func (r *ProductRest) route() {
 	r.mux.Post("/", r.Store)
 	r.mux.Get("/:id", r.Show)
 	r.mux.Delete("/:id", r.Destroy)
+
+	r.mux.Get("/:id/ratings", r.GetRatings)
+	r.mux.Post("/:id/ratings", r.SetRatings)
 }
 
 func (r *ProductRest) getService() *service.Service {
@@ -123,4 +127,47 @@ func (r *ProductRest) Destroy(c *ctx.Context) error {
 	}
 
 	return response.Success(c, http.StatusOK, nil)
+}
+
+func (r *ProductRest) GetRatings(c *ctx.Context) error {
+	idFromParams := c.GetParam("id")
+	id, err := strconv.Atoi(idFromParams)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	ratings, err := r.getService().Rating.FindByProductID(c.Context(), uint(id))
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, ratings)
+}
+
+func (r *ProductRest) SetRatings(c *ctx.Context) error {
+	idFromParams := c.GetParam("id")
+	id, err := strconv.Atoi(idFromParams)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	authMiddleware := middleware.NewAuthMiddleware(r.service)
+	user, err := authMiddleware.JWT(c)
+	if err != nil {
+		return response.Fail(c, http.StatusUnauthorized, err.Error())
+	}
+
+	var ratingUpdateOrCreateReq *request.RatingUpdateOrCreate
+	if c.GetJSON(&ratingUpdateOrCreateReq); err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	ratingUpdateOrCreateReq.User = user
+
+	ratings, err := r.getService().Rating.UpdateOrCreate(c.Context(), uint(id), ratingUpdateOrCreateReq.ToEntity())
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, ratings)
 }
