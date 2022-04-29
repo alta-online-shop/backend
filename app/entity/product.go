@@ -6,5 +6,7 @@ type Product struct {
 	Description string
 	Price       uint
 
+	Ratings uint
+
 	Categories []*Category
 }

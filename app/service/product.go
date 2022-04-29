@@ -19,6 +19,7 @@ type ProductService interface {
 
 type productService struct {
 	repo *repository.Repository
+	sv   *Service
 }
 
 func NewProductService() ProductService {
@@ -33,13 +34,49 @@ func (s *productService) getRepo() *repository.Repository {
 	return s.repo
 }
 
+func (s *productService) getService() *Service {
+	if s.sv == nil {
+		s.sv = ioc.Use(Service{}).(*Service)
+	}
+
+	return s.sv
+}
+
 func (s *productService) All(c context.Context) (products []entity.Product, err error) {
-	products, err = s.getRepo().Product.All(c)
+	currentProducts, err := s.getRepo().Product.All(c)
+	if err != nil {
+		return
+	}
+
+	for _, product := range currentProducts {
+		rating, err := s.getService().Rating.FindByProductID(c, product.ID)
+		if err != nil {
+			continue
+		}
+
+		product.Ratings = rating
+		products = append(products, product)
+	}
+
 	return
 }
 
 func (s *productService) FindByCategoryID(c context.Context, id uint) (products []entity.Product, err error) {
-	products, err = s.getRepo().Product.FindByCategoryID(c, id)
+	currentProducts, err := s.getRepo().Product.FindByCategoryID(c, id)
+	if err != nil {
+		return
+	}
+
+	for _, product := range currentProducts {
+		rating, err := s.getService().Rating.FindByProductID(c, product.ID)
+		if err != nil {
+			continue
+		}
+
+		product.Ratings = rating
+		products = append(products, product)
+	}
+
 	return
 }
 
