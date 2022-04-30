@@ -34,7 +34,7 @@ func (r *sql) All(c context.Context) ([]entity.Product, error) {
 }
 
 func (r *sql) FindByCategoryID(c context.Context, id uint) ([]entity.Product, error) {
-	var productsFromTable []table.Product
+	productsFromTable := make([]table.Product, 0)
 	err := r.db.WithContext(c).
 		Preload("Categories").
 		Joins("JOIN product_categories B ON B.product_id=products.id").
