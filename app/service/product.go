@@ -62,6 +62,7 @@ func (s *productService) All(c context.Context) (products []entity.Product, err 
 }
 
 func (s *productService) FindByCategoryID(c context.Context, id uint) (products []entity.Product, err error) {
+	products = make([]entity.Product, 0)
 	currentProducts, err := s.getRepo().Product.FindByCategoryID(c, id)
 	if err != nil {
 		return
