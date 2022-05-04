@@ -2,6 +2,7 @@ package rating
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/table"
 	"github.com/hadihammurabi/dummy-online-shop/app/entity"
@@ -25,6 +26,8 @@ func (r *sql) FindByProductID(c context.Context, id uint) ([]entity.Rating, erro
 		return nil, err
 	}
 
+	fmt.Println(ratingsFromTable)
+
 	ratings := make([]entity.Rating, 0)
 	for _, p := range ratingsFromTable {
 		ratings = append(ratings, *p.ToEntity())
@@ -36,9 +39,9 @@ func (r *sql) FindByProductID(c context.Context, id uint) ([]entity.Rating, erro
 func (r *sql) FindByProductAndUserID(c context.Context, productID, userID uint) (rating *entity.Rating, err error) {
 	var ratingFromTable *table.Rating
 	err = r.db.WithContext(c).
-		Preload("User", "id = ?", userID).
+		Preload("User").
 		Preload("Product").
-		Where("product_id = ?", productID).
+		Where("product_id = ? AND user_id = ?", productID, userID).
 		First(&ratingFromTable).Error
 	if err != nil {
 		return nil, err
