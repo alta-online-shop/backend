@@ -10,8 +10,9 @@ import (
 
 type RatingService interface {
 	FindByProductID(c context.Context, id uint) (uint, error)
+	FindByProductAndUserID(c context.Context, productID, userID uint) (*entity.Rating, error)
 	FindByID(c context.Context, id uint) (*entity.Rating, error)
-	UpdateOrCreate(c context.Context, id uint, p *entity.Rating) (*entity.Rating, error)
+	Set(c context.Context, p *entity.Rating) (*entity.Rating, error)
 }
 
 type ratingService struct {
@@ -43,31 +44,27 @@ func (s *ratingService) FindByProductID(c context.Context, id uint) (count uint,
 	return
 }
 
+func (s *ratingService) FindByProductAndUserID(c context.Context, productID, userID uint) (rating *entity.Rating, err error) {
+	rating, err = s.getRepo().Rating.FindByProductAndUserID(c, productID, userID)
+	return
+}
+
 func (s *ratingService) FindByID(c context.Context, id uint) (rating *entity.Rating, err error) {
 	rating, err = s.getRepo().Rating.FindByID(c, id)
 	return
 }
 
-func (s *ratingService) UpdateOrCreate(c context.Context, id uint, p *entity.Rating) (rating *entity.Rating, err error) {
-	ratings, err := s.getRepo().Rating.FindByProductID(c, id)
+func (s *ratingService) Set(c context.Context, p *entity.Rating) (rating *entity.Rating, err error) {
+	_, err = s.FindByProductAndUserID(c, p.ProductID, p.UserID)
 	if err != nil {
-		return
-	}
-
-	if len(ratings) <= 0 {
-		rating, err = s.getRepo().Rating.CreateByProductID(c, id, p)
-		if err != nil {
-			return nil, err
+		if rating, err = s.getRepo().Rating.CreateByProductAndUserID(c, p.ProductID, p.UserID, p); err != nil {
+			return
 		}
 	} else {
-		rating, err = s.getRepo().Rating.UpdateByProductID(c, id, p)
-		if err != nil {
+		if rating, err = s.getRepo().Rating.UpdateByProductAndUserID(c, p.ProductID, p.UserID, p); err != nil {
 			return
 		}
 	}
-
-	product, _ := s.getRepo().Product.FindByID(c, id)
-	rating.Product = product
 
 	return
 }

@@ -2,7 +2,6 @@ package rating
 
 import (
 	"context"
-	"errors"
 
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/table"
 	"github.com/hadihammurabi/dummy-online-shop/app/entity"
@@ -34,6 +33,21 @@ func (r *sql) FindByProductID(c context.Context, id uint) ([]entity.Rating, erro
 	return ratings, nil
 }
 
+func (r *sql) FindByProductAndUserID(c context.Context, productID, userID uint) (rating *entity.Rating, err error) {
+	var ratingFromTable *table.Rating
+	err = r.db.WithContext(c).
+		Preload("User", "id = ?", userID).
+		Preload("Product").
+		Where("product_id = ?", productID).
+		First(&ratingFromTable).Error
+	if err != nil {
+		return nil, err
+	}
+
+	rating = ratingFromTable.ToEntity()
+	return rating, nil
+}
+
 func (r *sql) FindByID(c context.Context, id uint) (*entity.Rating, error) {
 	var ratingFromTable *table.Rating
 	err := r.db.WithContext(c).Where("id = ?", id).First(&ratingFromTable).Error
@@ -44,9 +58,10 @@ func (r *sql) FindByID(c context.Context, id uint) (*entity.Rating, error) {
 	return ratingFromTable.ToEntity(), nil
 }
 
-func (r *sql) CreateByProductID(c context.Context, id uint, p *entity.Rating) (*entity.Rating, error) {
+func (r *sql) CreateByProductAndUserID(c context.Context, productID, userID uint, p *entity.Rating) (*entity.Rating, error) {
 	ratingToTable := table.RatingFromEntity(p)
-	ratingToTable.ProductID = id
+	ratingToTable.ProductID = productID
+	ratingToTable.UserID = userID
 	err := r.db.WithContext(c).Create(&ratingToTable).Error
 	if err != nil {
 		return nil, err
@@ -54,19 +69,15 @@ func (r *sql) CreateByProductID(c context.Context, id uint, p *entity.Rating) (*
 	return ratingToTable.ToEntity(), nil
 }
 
-func (r *sql) UpdateByProductID(c context.Context, id uint, p *entity.Rating) (*entity.Rating, error) {
-	ratingsFromTable, err := r.FindByProductID(c, id)
+func (r *sql) UpdateByProductAndUserID(c context.Context, productID, userID uint, p *entity.Rating) (*entity.Rating, error) {
+	ratingsFromTable, err := r.FindByProductAndUserID(c, productID, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(ratingsFromTable) <= 0 {
-		return nil, errors.New("not found")
-	}
-
-	ratingToTable := table.RatingFromEntity(&ratingsFromTable[0])
+	ratingToTable := table.RatingFromEntity(ratingsFromTable)
 	ratingToTable.Count = p.Count
-	err = r.db.WithContext(c).Updates(&ratingToTable).Error
+	err = r.db.Debug().WithContext(c).Updates(&ratingToTable).Error
 	if err != nil {
 		return nil, err
 	}

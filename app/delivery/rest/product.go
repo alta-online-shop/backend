@@ -162,12 +162,18 @@ func (r *ProductRest) SetRatings(c *ctx.Context) error {
 		return response.Fail(c, http.StatusBadRequest, err.Error())
 	}
 
-	ratingUpdateOrCreateReq.User = user
+	ratingUpdateOrCreateReq.ProductID = uint(id)
+	ratingUpdateOrCreateReq.UserID = user.ID
 
-	ratings, err := r.getService().Rating.UpdateOrCreate(c.Context(), uint(id), ratingUpdateOrCreateReq.ToEntity())
+	_, err = r.getService().Rating.Set(c.Context(), ratingUpdateOrCreateReq.ToEntity())
 	if err != nil {
 		return response.Fail(c, http.StatusInternalServerError, err.Error())
 	}
 
-	return response.Success(c, http.StatusOK, ratings)
+	product, err := r.getService().Product.FindByID(c.Context(), ratingUpdateOrCreateReq.ProductID)
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, product)
 }

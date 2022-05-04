@@ -3,13 +3,17 @@ package request
 import "github.com/hadihammurabi/dummy-online-shop/app/entity"
 
 type RatingUpdateOrCreate struct {
-	Count uint `json:"count"`
-	User  *entity.User
+	ID        uint
+	Count     uint `json:"count"`
+	UserID    uint
+	ProductID uint
 }
 
 func (r RatingUpdateOrCreate) ToEntity() *entity.Rating {
 	return &entity.Rating{
-		Count: r.Count,
-		User:  r.User,
+		ID:        r.ID,
+		Count:     r.Count,
+		UserID:    r.UserID,
+		ProductID: r.ProductID,
 	}
 }
