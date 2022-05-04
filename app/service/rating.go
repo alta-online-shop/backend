@@ -41,7 +41,10 @@ func (s *ratingService) FindByProductID(c context.Context, id uint) (count uint,
 		count += rating.Count
 	}
 
-	count /= uint(len(ratings))
+	length := uint(len(ratings))
+	if length > 0 {
+		count /= uint(len(ratings))
+	}
 
 	return
 }
