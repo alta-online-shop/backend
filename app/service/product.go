@@ -83,6 +83,16 @@ func (s *productService) FindByCategoryID(c context.Context, id uint) (products 
 
 func (s *productService) FindByID(c context.Context, id uint) (product *entity.Product, err error) {
 	product, err = s.getRepo().Product.FindByID(c, id)
+	if err != nil {
+		return nil, err
+	}
+
+	ratings, err := s.getService().Rating.FindByProductID(c, product.ID)
+	if err != nil {
+		return product, nil
+	}
+
+	product.Ratings = ratings
 	return
 }
 
