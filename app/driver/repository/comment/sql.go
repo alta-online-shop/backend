@@ -1,4 +1,4 @@
-package category
+package comment
 
 import (
 	"context"
@@ -12,20 +12,20 @@ type sql struct {
 	db *gorm.DB
 }
 
-func NewSQL(db *gorm.DB) CategoryRepo {
+func NewSQL(db *gorm.DB) CommentRepo {
 	return &sql{
 		db,
 	}
 }
 
-func (r *sql) All(c context.Context) ([]entity.Category, error) {
-	var categoriesFromTable []table.Category
+func (r *sql) All(c context.Context) ([]entity.Comment, error) {
+	var categoriesFromTable []table.Comment
 	err := r.db.WithContext(c).Find(&categoriesFromTable).Error
 	if err != nil {
 		return nil, err
 	}
 
-	categories := make([]entity.Category, 0)
+	categories := make([]entity.Comment, 0)
 	for _, p := range categoriesFromTable {
 		categories = append(categories, *p.ToEntity())
 	}
@@ -33,8 +33,23 @@ func (r *sql) All(c context.Context) ([]entity.Category, error) {
 	return categories, nil
 }
 
-func (r *sql) FindByID(c context.Context, id uint) (*entity.Category, error) {
-	var categoryFromTable *table.Category
+func (r *sql) FindByProductID(c context.Context, id uint) ([]entity.Comment, error) {
+	var categoriesFromTable []table.Comment
+	err := r.db.WithContext(c).Where("product_id = ?", id).Find(&categoriesFromTable).Error
+	if err != nil {
+		return nil, err
+	}
+
+	categories := make([]entity.Comment, 0)
+	for _, p := range categoriesFromTable {
+		categories = append(categories, *p.ToEntity())
+	}
+
+	return categories, nil
+}
+
+func (r *sql) FindByID(c context.Context, id uint) (*entity.Comment, error) {
+	var categoryFromTable *table.Comment
 	err := r.db.WithContext(c).Where("id = ?", id).First(&categoryFromTable).Error
 	if err != nil {
 		return nil, err
@@ -43,28 +58,28 @@ func (r *sql) FindByID(c context.Context, id uint) (*entity.Category, error) {
 	return categoryFromTable.ToEntity(), nil
 }
 
-func (r *sql) Create(c context.Context, p *entity.Category) (*entity.Category, error) {
-	categoryToTable := table.CategoryFromEntity(p)
-	err := r.db.WithContext(c).Create(&categoryToTable).Error
+func (r *sql) Create(c context.Context, p *entity.Comment) (*entity.Comment, error) {
+	commentToTable := table.CommentFromEntity(p)
+	err := r.db.WithContext(c).Create(&commentToTable).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return categoryToTable.ToEntity(), nil
+	return commentToTable.ToEntity(), nil
 }
 
-func (r *sql) Update(c context.Context, p *entity.Category) (*entity.Category, error) {
-	categoryToTable := table.CategoryFromEntity(p)
-	err := r.db.WithContext(c).Updates(&categoryToTable).Error
+func (r *sql) Update(c context.Context, p *entity.Comment) (*entity.Comment, error) {
+	commentToTable := table.CommentFromEntity(p)
+	err := r.db.WithContext(c).Updates(&commentToTable).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return categoryToTable.ToEntity(), nil
+	return commentToTable.ToEntity(), nil
 }
 
 func (r *sql) Delete(c context.Context, id uint) error {
-	err := r.db.WithContext(c).Delete(&table.Category{Model: &gorm.Model{ID: id}}).Error
+	err := r.db.WithContext(c).Delete(&table.Comment{Model: &gorm.Model{ID: id}}).Error
 	if err != nil {
 		return err
 	}

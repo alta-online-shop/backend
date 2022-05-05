@@ -34,6 +34,9 @@ func (r *ProductRest) route() {
 
 	r.mux.Get("/:id/ratings", r.GetRatings)
 	r.mux.Post("/:id/ratings", r.SetRatings)
+
+	r.mux.Get("/:id/comments", r.GetComments)
+	r.mux.Post("/:id/comments", r.CreateComments)
 }
 
 func (r *ProductRest) getService() *service.Service {
@@ -176,4 +179,48 @@ func (r *ProductRest) SetRatings(c *ctx.Context) error {
 	}
 
 	return response.Success(c, http.StatusOK, product)
+}
+
+func (r *ProductRest) GetComments(c *ctx.Context) error {
+	idFromParams := c.GetParam("id")
+	id, err := strconv.Atoi(idFromParams)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	comments, err := r.getService().Comment.FindByProductID(c.Context(), uint(id))
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, comments)
+}
+
+func (r *ProductRest) CreateComments(c *ctx.Context) error {
+	idFromParams := c.GetParam("id")
+	id, err := strconv.Atoi(idFromParams)
+	if err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	authMiddleware := middleware.NewAuthMiddleware(r.service)
+	user, err := authMiddleware.JWT(c)
+	if err != nil {
+		return response.Fail(c, http.StatusUnauthorized, err.Error())
+	}
+
+	var commentCreateReq *request.CommentCreate
+	if c.GetJSON(&commentCreateReq); err != nil {
+		return response.Fail(c, http.StatusBadRequest, err.Error())
+	}
+
+	commentCreateReq.ProductID = uint(id)
+	commentCreateReq.User = user
+
+	comment, err := r.getService().Comment.Create(c.Context(), commentCreateReq.ToEntity())
+	if err != nil {
+		return response.Fail(c, http.StatusInternalServerError, err.Error())
+	}
+
+	return response.Success(c, http.StatusOK, comment)
 }

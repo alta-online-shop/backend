@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS comments (
   user_id INT NOT NULL,
   product_id INT NOT NULL,
   comment_id INT,
-  contents VARCHAR NOT NULL,
+  content TEXT NOT NULL CHECK(content != ''),
 
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP,
