@@ -61,12 +61,14 @@ func (r *OrderRest) Index(c *ctx.Context) error {
 	orderResponse := make([]rr, 0)
 
 	for _, order := range orders {
-		orderResponse = append(orderResponse, rr{
-			Product:  order.Product.Name,
-			Price:    order.Product.Price,
-			Quantity: order.Quantity,
-			Subtotal: order.Quantity * order.Product.Price,
-		})
+		if order.Product != nil {
+			orderResponse = append(orderResponse, rr{
+				Product:  order.Product.Name,
+				Price:    order.Product.Price,
+				Quantity: order.Quantity,
+				Subtotal: order.Quantity * order.Product.Price,
+			})
+		}
 	}
 
 	return response.Success(c, http.StatusOK, orderResponse)
