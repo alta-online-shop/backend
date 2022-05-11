@@ -2,7 +2,6 @@ package rating
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hadihammurabi/dummy-online-shop/app/driver/repository/table"
 	"github.com/hadihammurabi/dummy-online-shop/app/entity"
@@ -25,8 +24,6 @@ func (r *sql) FindByProductID(c context.Context, id uint) ([]entity.Rating, erro
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(ratingsFromTable)
 
 	ratings := make([]entity.Rating, 0)
 	for _, p := range ratingsFromTable {
