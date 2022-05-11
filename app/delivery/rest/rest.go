@@ -6,6 +6,7 @@ import (
 
 	"github.com/ngamux/ctx"
 	"github.com/ngamux/middleware/cors"
+	"github.com/ngamux/middleware/recover"
 	"github.com/ngamux/ngamux"
 )
 
@@ -26,6 +27,7 @@ func New() *Rest {
 	mux.Use(cors.New(cors.Config{
 		AllowHeaders: "content-type,authorization",
 	}))
+	mux.Use(recover.New())
 	rest := &Rest{mux}
 
 	rest.buildRoute()
