@@ -160,7 +160,7 @@ func (r *ProductRest) SetRatings(c *ctx.Context) error {
 		return response.Fail(c, http.StatusUnauthorized, err.Error())
 	}
 
-	var ratingUpdateOrCreateReq *request.RatingUpdateOrCreate
+	var ratingUpdateOrCreateReq request.RatingUpdateOrCreate
 	if c.GetJSON(&ratingUpdateOrCreateReq); err != nil {
 		return response.Fail(c, http.StatusBadRequest, err.Error())
 	}
